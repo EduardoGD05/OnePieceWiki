@@ -1,0 +1,17 @@
+{% extends 'WikiPage/base.html' %}
+{% block content %} 
+  
+<h1 class="page_title">Capítulos de One Piece</h1>   
+<div class="content">
+    {% for chapter in chapters %}
+    <section class="info_card character-overview">
+            <h3>{{ chapter.title }}</h3>
+            <p><strong>Número de capítulo:</strong> {{ chapter.number }}</p>
+            <p><strong>Descripción:</strong> {{ chapter.description }}</p>
+            <p><strong>Fecha de lanzamiento:</strong> {{ chapter.release_date }}</p>
+            <p><strong>Saga:</strong> {{ chapter.saga.title }}</p>
+            <p><strong>Arco:</strong> {{ chapter.arc.title }}</p> 
+        </section>
+    {% endfor %}
+    </div>
+{% endblock %}

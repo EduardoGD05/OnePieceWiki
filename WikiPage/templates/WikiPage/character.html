@@ -1,0 +1,12 @@
+{% extends 'WikiPage/base.html' %}
+{% block content %} 
+<h1 class="page_title">{{ character.name }}</h1> 
+<section class="info_card character-overview">  
+<p><strong>Edad:</strong> {{ character.age }}</p>
+<p><strong>Fecha de nacimiento:</strong> {{ character.birthday }}</p>
+<p><strong>Recompensa:</strong> {{ character.bounty }}</p>
+<p><strong>Estado:</strong> {{ character.status }}</p>
+<p><strong>Tripulación:</strong> {{ character.crew.name }}</p>
+</section>
+      
+{% endblock %}
