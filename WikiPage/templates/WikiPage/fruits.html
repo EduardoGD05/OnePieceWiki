@@ -1,16 +1,18 @@
 {% extends 'WikiPage/base.html' %}
 {% block content %} 
-<h1 class="page_title">Frutas del Diablo</h1> 
 <div class="content">
  {% for fruit in fruits %}
+     {% if fruit.id != 2%}
     <section class="info_card character-overview">
         <h3>{{ fruit.name }}</h3>
         <p><strong>Descripción:</strong> {{ fruit.description }}</p>
         <p><strong>Tipo:</strong> {{ fruit.type }}</p>
-        <p><strong>Nombre romano:</strong> {{ fruit.roman_name }}</p>
-        <p><strong>Archivo técnico:</strong> {{ fruit.technicalFile }}</p>
-        <img src="{{ fruit.filename }}" alt="{{ fruit.name }}" />
+        <p><strong>Nombre romano:</strong> {{ fruit.roman_name }}</p> 
+        {% if fruit.filename != fruit.technicalFile %}
+        <img src="{{ fruit.filename }}" alt="{{ fruit.name }}" id="fruit"/>
+        {%endif%}
     </section>
+    {% endif %}
     {% endfor %}
 </div>
 {% endblock %}

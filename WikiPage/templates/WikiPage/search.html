@@ -1,20 +1,24 @@
 {% extends 'WikiPage/base.html' %}
 {% block content %} 
   {% if search_query %}
-        <h1 class="page_title">RESULTADOS DE BUSQUEDA PARA "{{ search_query }}"</h1> 
         <div class="content">
         {% if characters %}
                 {% for character in characters %}
                 <section class="info_card character-overview">
                     <div>
+                        {% if character.image_url %}
+                        <img src="{{ character.image_url }}" alt="{{ character.name }}" class="character-image" />
+                        {% else %}
+                        <p></p>
+                        {% endif %}
                         <h3>{{ character.name }}</h3>
-                        <p><strong>Age:</strong> {{ character.age }} </p>
-                        <p><strong>Birthday:</strong> {{ character.birthday|default:"N/A" }} </p>
-                        <p><strong>Job:</strong> {{ character.job |default:"N/A"}}</p>
-                        <p><strong>Bounty:</strong> {{ character.bounty }} </p>
-                        <p><strong>Status:</strong> {{ character.status }} </p>
-                        <p><strong>Fruit:</strong> {{ character.fruit.name|default:"N/A" }}</p>
-                        <p><strong>Crew:</strong> {{ character.crew.name|default:"N/A" }}</p>
+                        <p><strong>Edad:</strong> {{ character.age }} </p>
+                        <p><strong>Fecha de Nacimiento:</strong> {{ character.birthday|default:"N/A" }} </p>
+                        <p><strong>Trabajo:</strong> {{ character.job |default:"N/A"}}</p>
+                        <p><strong>Recompensa:</strong> {{ character.bounty }} </p>
+                        <p><strong>Estatus:</strong> {{ character.status }} </p>
+                        <p><strong>Fruta:</strong> {{ character.fruit.name|default:"N/A" }}</p>
+                        <p><strong>Tripulación:</strong> {{ character.crew.name|default:"N/A" }}</p>
                     </div>
                     </section>
                 {% endfor %}
@@ -26,8 +30,8 @@
                 <section class="info_card character-overview">
                     <div>
                         <h3>{{ fruit.name }}</h3>
-                        <p><strong>Type:</strong> {{ fruit.tipo |default:"N/A" }}</p>
-                        <p><strong>Description:</strong> {{ fruit.description }}</p>
+                        <p><strong>Tipo:</strong> {{ fruit.tipo |default:"N/A" }}</p>
+                        <p><strong>Descripción:</strong> {{ fruit.description }}</p>
                     </div>
                     </section>
                 {% endfor %}
@@ -39,8 +43,8 @@
                 <section class="info_card character-overview">
                     <div>
                         <h3>{{ crew.name }}</h3>
-                        <p><strong>Number of Members:</strong> {{ crew.number }}</p>
-                        <p><strong>Status:</strong> {{ crew.status|default:"unknown"  }}</p>
+                        <p><strong>Número de Tripulantes:</strong> {{ crew.number }}</p>
+                        <p><strong>Estatus:</strong> {{ crew.status|default:"unknown"  }}</p>
 
                     </div>
                     </section>
@@ -52,8 +56,13 @@
                 {% for saga in sagas %}
                 <section class="info_card character-overview">
                     <div>
+                        {% if saga.image_url %}
+                        <img src="{{ saga.image_url }}" />
+                        {% else %}
+                        <p></p>
+                        {% endif %}
                         <h3>{{ saga.title }}</h3>
-                        <p><strong>Saga Number:</strong> {{ saga.saga_number }}</p>
+                        <p><strong>Número de Saga:</strong> {{ saga.saga_number }}</p>
                     </div>
                     </section>
                 {% endfor %} 
@@ -64,7 +73,7 @@
                 <section class="info_card character-overview">
                     <div>
                         <h3>{{ arc.title }}</h3>
-                        <p><strong>Description:</strong> {{ arc.description }}</p>
+                        <p><strong>Descripción:</strong> {{ arc.description }}</p>
                     </div>
                     </section>
                 {% endfor %} 

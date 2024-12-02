@@ -1,0 +1,16 @@
+{% extends 'WikiPage/base.html' %}
+{% block content %} 
+ <div class="content">
+     
+    {% for arc in arcs %} 
+            <a href="{% url 'arc_chapter' arc.id %}" class="info_card"  > 
+        <section class=" character-overview">
+            {% if arc.image_url %}
+                <img src="{{ arc.image_url }}" /> 
+            {% endif %}
+            <h3>{{ arc.title }}</h3> 
+            <p><strong>Descripción:</strong> {{ arc.description }}</p> 
+        </section> 
+    {% endfor %}
+    </div>
+{% endblock %}

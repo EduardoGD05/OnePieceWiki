@@ -3,31 +3,31 @@ from django.shortcuts import render ,get_object_or_404
 from .models import Crew, Fruit, Character, Saga, Arc, Chapter
 
 def home(request):
-    return render(request,'WikiPage/onepiece.html')
+    return render(request,'WikiPage/onepiece.html',{'page_title': 'CATEGORÍAS'})
 
 def crew_list(request):
     crews = Crew.objects.all()
-    return render(request,'WikiPage/crews.html',{'crews':crews})
+    return render(request,'WikiPage/crews.html',{'page_title':'TRIPULACIONES DE ONE PIECE', 'crews':crews})
 
 def fruits_list(request):
     fruits =Fruit.objects.all()
-    return render(request,'WikiPage/fruits.html',{'fruits':fruits})
+    return render(request,'WikiPage/fruits.html',{'page_title':'FRUTAS DEL DIABLO', 'fruits':fruits})
     
 def character_list(request):
     characters = Character.objects.all()
-    return render(request,'WikiPage/characters.html',{'characters':characters})
+    return render(request,'WikiPage/characters.html',{'page_title':'PERSONAJES', 'characters':characters})
     
 def saga_list (request):
     sagas = Saga.objects.all()
-    return render(request, 'WikiPage/sagas.html', {'sagas':sagas})
+    return render(request, 'WikiPage/sagas.html', {'page_title':'SAGAS DE ONE PIECE', 'sagas':sagas})
     
 def arc_list(request):
     arcs = Arc.objects.all()
-    return render(request,'WikiPage/arcs.html',{'arcs':arcs})
+    return render(request,'WikiPage/arcs.html',{'page_title':'ARCOS DE ONE PIECE', 'arcs':arcs})
     
 def chapter_list(request):
     chapters = Chapter.objects.all()
-    return render(request, 'WikiPage/chapters.html',{'chapters':chapters})
+    return render(request, 'WikiPage/chapters.html',{'page_title':'CAPÍTULOS DE ONE PIECE',  'chapters':chapters})
 
 
 
@@ -35,8 +35,23 @@ def chapter_list(request):
     
 def character(request,id): 
     character = get_object_or_404(Character, id=id)
-    return render(request, 'WikiPage/character.html', {'character': character})
+    return render(request, 'WikiPage/character.html', {'page_title':character.name, 'character': character})
     
+def saga_arcs(request, id):
+    saga = get_object_or_404(Saga, id=id)
+    # Obtener los arcos asociados con los capítulos de esta saga
+    arcs = Arc.objects.filter(chapters__saga=saga).distinct()
+    return render(request, 'WikiPage/arcs.html', {'page_title': f'Arcos de {saga.title}','saga': saga, 'arcs': arcs})
+    
+def saga_chapter(request, id):  
+    saga = get_object_or_404(Saga, id=id) 
+    chapters = Chapter.objects.filter(saga=saga)
+    return render(request, 'WikiPage/chapter.html', {'page_title': f'Capítulos de {saga.title}','saga': saga, 'chapters': chapters})
+
+def arc_chapter(request, id):  
+    arc = get_object_or_404(Arc, id=id) 
+    chapters = Chapter.objects.filter(arc=arc)
+    return render(request, 'WikiPage/chapters.html', {'page_title': f'Capítulos de {arc.title}','arc': arc, 'chapters': chapters})
 
 def global_search(request):
     # Obtener el término de búsqueda desde la barra de navegación
@@ -59,6 +74,7 @@ def global_search(request):
 
     # Pasar los resultados al template
     return render(request, 'WikiPage/search.html', {
+        'page_title': f'Resultados de busqueda para:  "{search_query}"',
         'search_query': search_query,
         'characters': characters,
         'fruits': fruits,

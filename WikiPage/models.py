@@ -22,7 +22,7 @@ class Fruit(models.Model):
     filename = models.CharField(max_length=100)
     roman_name = models.CharField(max_length=100)
     technicalFile = models.CharField(max_length=100)
-
+    image_url = models.URLField(null=True, blank=True)
     def __str__(self):
         return self.name
 
@@ -37,14 +37,12 @@ class Character(models.Model):
     status = models.CharField(max_length=200, default='Desconocido')
     crew = models.ForeignKey(Crew, on_delete=models.SET_NULL, null=True)
     fruit = models.ForeignKey(Fruit, on_delete=models.SET_NULL, null=True)
+    image_url = models.URLField(null=True, blank=True) 
 
     def __str__(self):
         return self.name
-
-
+        
 # PARA LAS SAGAS
-
-from django.db import models
 
 class Saga(models.Model):
     title = models.CharField(max_length=255)
@@ -52,14 +50,17 @@ class Saga(models.Model):
     saga_chapitre = models.CharField(max_length=100)
     saga_volume = models.CharField(max_length=100)
     saga_episode = models.CharField(max_length=100)
+    image_url = models.URLField(null=True, blank=True) 
 
     def __str__(self):
         return self.title
 
+# ARCOS
 
 class Arc(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
+    image_url = models.URLField(null=True, blank=True) 
 
     def __str__(self):
         return self.title
@@ -76,6 +77,7 @@ class Chapter(models.Model):
     # Relaciones con Saga y Arc
     saga = models.ForeignKey(Saga, related_name='chapters', on_delete=models.CASCADE)
     arc = models.ForeignKey(Arc, related_name='chapters', on_delete=models.CASCADE)
+    image_url = models.URLField(null=True, blank=True) 
 
     def __str__(self):
         return f"{self.title} (Capítulo {self.number})"

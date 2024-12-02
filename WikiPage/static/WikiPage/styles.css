@@ -8,7 +8,15 @@
     color: #fff;
     padding: 10px 0;
     width: 100%;
+    
+    
 }
+
+a{
+  color: inherit; /* blue colors for links too */
+  text-decoration: inherit; /* no underline */
+    }
+    
 .navbar{
     max-width: 1200px;
     margin: 0 auto;
@@ -267,6 +275,11 @@ nav {
 .info_card + .info_card{
     border-radius: 10px; 
   }
+  
+.info_card img{
+  width: 350px;
+  height:530px;
+}
 
 .character-overview {
     text-align: center;
@@ -298,4 +311,9 @@ nav {
     margin-top: 30px;
     font-size: 0.9rem;
     margin: 0px;
+}
+
+#fruit{
+  width:400px;
+  height: auto;
 }

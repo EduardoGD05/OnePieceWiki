@@ -1,14 +1,15 @@
 {% extends 'WikiPage/base.html' %}
 {% block content %} 
   
-<h1 class="page_title">Capítulos de One Piece</h1>   
 <div class="content">
     {% for chapter in chapters %}
     <section class="info_card character-overview">
+            <img src="https://lafrikileria.com/blog/wp-content/uploads/2021/07/one-piece-logo.jpg" alt="One Piece Logo"
+             style="width: 100%; max-width: 350px; height: auto; max-height: 530px; object-fit: contain; border-radius: 10px; margin-bottom: 15px;" />
             <h3>{{ chapter.title }}</h3>
             <p><strong>Número de capítulo:</strong> {{ chapter.number }}</p>
             <p><strong>Descripción:</strong> {{ chapter.description }}</p>
-            <p><strong>Fecha de lanzamiento:</strong> {{ chapter.release_date }}</p>
+            <p><strong>Fecha de Lanzamiento:</strong> {{ chapter.release_date }}</p>
             <p><strong>Saga:</strong> {{ chapter.saga.title }}</p>
             <p><strong>Arco:</strong> {{ chapter.arc.title }}</p> 
         </section>

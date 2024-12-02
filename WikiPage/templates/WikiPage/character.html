@@ -1,7 +1,10 @@
 {% extends 'WikiPage/base.html' %}
 {% block content %} 
-<h1 class="page_title">{{ character.name }}</h1> 
+
 <section class="info_card character-overview">  
+{% if character.image_url %}
+    <img src="{{ character.image_url }}" alt="{{ character.name }}" class="character-image" /> 
+{% endif %}
 <p><strong>Edad:</strong> {{ character.age }}</p>
 <p><strong>Fecha de nacimiento:</strong> {{ character.birthday }}</p>
 <p><strong>Recompensa:</strong> {{ character.bounty }}</p>

@@ -9,6 +9,3 @@ admin.site.register(Character)
 admin.site.register(Saga) 
 admin.site.register(Arc) 
 admin.site.register(Chapter) 
-
-
-

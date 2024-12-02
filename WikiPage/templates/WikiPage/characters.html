@@ -1,9 +1,13 @@
 {% extends 'WikiPage/base.html' %}
 {% block content %}
-<h1 class="page_title">Personajes de One Piece</h1> 
 <div class="content">
     {% for character in characters %}   
         <section class="info_card character-overview">
+            
+            {% if character.image_url %}
+            <img src="{{ character.image_url }}" alt="{{ character.name }}" class="character-image" /> 
+            {% endif %}
+            
             <h3>{{ character.name }}</h3>
             <p><strong>Edad:</strong> {{ character.age }}</p>
             <p><strong>Fecha de nacimiento:</strong> {{ character.birthday }}</p>
