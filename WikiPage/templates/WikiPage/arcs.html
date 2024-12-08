@@ -9,7 +9,7 @@
                 <img src="{{ arc.image_url }}" /> 
             {% endif %}
             <h3>{{ arc.title }}</h3> 
-            <p><strong>Descripción:</strong> {{ arc.description }}</p> 
+            <p><strong>Descripción:</strong> {{ arc.description | default:"N/A"}}</p> 
         </section> 
     {% endfor %}
     </div>

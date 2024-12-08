@@ -10,6 +10,7 @@ class Crew(models.Model):
     roman_name = models.CharField(max_length=100)
     total_prime = models.CharField(max_length=100)
     is_yonko = models.BooleanField()
+    image_url = models.URLField(null=True, blank=True)
 
     def __str__(self):
         return self.name

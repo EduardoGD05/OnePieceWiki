@@ -174,7 +174,7 @@ nav {
   }
   
   .page_title{
-    background:#f6a700;
+    background:#f4be03;;
     color: #000000;
     text-shadow: -1px 0 #ffffff, 0 1px #ffffff, 1px 0 #ffffff, 0 -1px #ffffff;
     display:flex;  
@@ -284,6 +284,12 @@ nav {
 .character-overview {
     text-align: center;
 }
+.character-overview a:hover{
+    color:royalblue;
+}
+.character-overview a:focus{
+    color:darkblue;
+}
 
 .character-image {
     width: 250px;
@@ -316,4 +322,40 @@ nav {
 #fruit{
   width:400px;
   height: auto;
+}
+
+.highlight {
+    background-color: yellow; 
+    padding:0px;
+    font-weight: inherit;
+    text-shadow: none;
+}
+
+.pagination{
+    background-color: #f4be03;; 
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.step-links a, span{ 
+  padding:10px;
+    font-weight:bold; 
+    text-shadow: -1px 0 #ffffff, 0 1px #ffffff, 1px 0 #ffffff, 0 -1px #ffffff;
+    
+}
+
+.step-links span{  
+  background-color: #c11a1a;
+  color:white;
+  text-shadow: -1px 0 #000000, 0 1px #000000, 1px 0 #000000, 0 -1px #000000;
+}
+
+.step-links a:hover{
+  color: royalblue;
+  
+}
+
+.step-links a:focus{
+  color: darkblue;
 }

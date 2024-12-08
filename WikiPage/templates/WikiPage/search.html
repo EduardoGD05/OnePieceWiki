@@ -1,88 +1,109 @@
 {% extends 'WikiPage/base.html' %}
-{% block content %} 
-  {% if search_query %}
-        <div class="content">
-        {% if characters %}
-                {% for character in characters %}
+{% load custom_filters %}
+{% block content %}
+{% if search_query %}
+
+    <div class="content">
+        {% if page_results %}
+            {% for result in page_results %}
                 <section class="info_card character-overview">
-                    <div>
-                        {% if character.image_url %}
-                        <img src="{{ character.image_url }}" alt="{{ character.name }}" class="character-image" />
-                        {% else %}
-                        <p></p>
+
+                    {% if result|get_type == 'Character' %} 
+                        {% if result.image_url %}
+                            <img src="{{ result.image_url }}" alt="{{ result.name }}" class="character-image" />
                         {% endif %}
-                        <h3>{{ character.name }}</h3>
-                        <p><strong>Edad:</strong> {{ character.age }} </p>
-                        <p><strong>Fecha de Nacimiento:</strong> {{ character.birthday|default:"N/A" }} </p>
-                        <p><strong>Trabajo:</strong> {{ character.job |default:"N/A"}}</p>
-                        <p><strong>Recompensa:</strong> {{ character.bounty }} </p>
-                        <p><strong>Estatus:</strong> {{ character.status }} </p>
-                        <p><strong>Fruta:</strong> {{ character.fruit.name|default:"N/A" }}</p>
-                        <p><strong>Tripulación:</strong> {{ character.crew.name|default:"N/A" }}</p>
-                    </div>
-                    </section>
-                {% endfor %}
-            
-        {% endif %}
-
-        {% if fruits %}
-                {% for fruit in fruits %}
-                <section class="info_card character-overview">
-                    <div>
-                        <h3>{{ fruit.name }}</h3>
-                        <p><strong>Tipo:</strong> {{ fruit.tipo |default:"N/A" }}</p>
-                        <p><strong>Descripción:</strong> {{ fruit.description }}</p>
-                    </div>
-                    </section>
-                {% endfor %}
-            
-        {% endif %}
-
-        {% if crews %}
-                {% for crew in crews %}
-                <section class="info_card character-overview">
-                    <div>
-                        <h3>{{ crew.name }}</h3>
-                        <p><strong>Número de Tripulantes:</strong> {{ crew.number }}</p>
-                        <p><strong>Estatus:</strong> {{ crew.status|default:"unknown"  }}</p>
-
-                    </div>
-                    </section>
-                {% endfor %}
-            
-        {% endif %}
-
-        {% if sagas %}
-                {% for saga in sagas %}
-                <section class="info_card character-overview">
-                    <div>
-                        {% if saga.image_url %}
-                        <img src="{{ saga.image_url }}" />
+                        <h3>{{ result.name|highlight_all:search_query }}</h3>
+                        <p><strong>Edad:</strong> {{ result.age|default:"N/A"|highlight_all:search_query }}</p>
+                        <p><strong>Recompensa:</strong> {{ result.bounty|default:"N/A"|highlight_all:search_query }}</p>
+                        <p><strong>Estado:</strong> {{ result.status }}</p>
+                        {% if result.crew %}
+                            <a href="{% url 'crew' result.crew.id %}">
+                                <p><strong>Tripulación:</strong> {{ result.crew.name|highlight_all:search_query }}</p>
+                            </a>
                         {% else %}
-                        <p></p>
+                            <p><strong>Tripulación:</strong> N/A</p>
                         {% endif %}
-                        <h3>{{ saga.title }}</h3>
-                        <p><strong>Número de Saga:</strong> {{ saga.saga_number }}</p>
-                    </div>
-                    </section>
-                {% endfor %} 
+                        {% if result.fruit %}
+                            <a href="{% url 'fruit' result.fruit.id %}">
+                                <p><strong>Fruto:</strong> {{ result.fruit.name|highlight_all:search_query }}</p>
+                            </a>
+                        {% else %}
+                            <p><strong>Fruto:</strong> N/A</p>
+                        {% endif %}
+                    
+                    {% elif result|get_type == 'Fruit' %}
+                        <h3>{{ result.name|highlight_all:search_query }}</h3>
+                        <p><strong>Descripción:</strong> {{ result.description|highlight_all:search_query }}</p>
+                        <p><strong>Tipo:</strong> {{ result.type|highlight_all:search_query }}</p>
+                        <p><strong>Nombre romano:</strong> {{ result.roman_name|highlight_all:search_query }}</p>
+                        {% if result.filename %}
+                            <img src="{{ result.filename }}" alt="{{ result.name }}" class="fruit-image" />
+                        {% endif %}
+                    
+                    {% elif result|get_type == 'Crew' %}
+                        {% if result.image_url %}
+                            <img src="{{ result.image_url }}" style="width: 100%; max-width: 350px; height: auto; max-height: 530px; object-fit: contain; border-radius: 10px; margin-bottom: 15px;" />
+                        {% endif %}
+                        <h3>{{ result.name|highlight_all:search_query }}</h3>
+                        <p><strong>Número de miembros:</strong> {{ result.number }}</p>
+                        <p><strong>¿Es Yonko?:</strong> {{ result.is_yonko|yesno:"Sí,No" }}</p>
+                    
+                    {% elif result|get_type == 'Saga' %}
+                        <a href="{% url 'saga_arcs' result.id %}" class="info_card">
+                            {% if result.image_url %}
+                                <img src="{{ result.image_url }}" alt="{{ result.title }}" />
+                            {% endif %}
+                            <h3>{{ result.title|highlight_all:search_query }}</h3>
+                            <p><strong>Número de Saga:</strong> {{ result.saga_number|highlight_all:search_query }}</p>
+                            <p><strong>Volúmenes:</strong> {{ result.saga_volume|highlight_all:search_query }}</p>
+                            <p><strong>Capítulos:</strong> {{ result.saga_chapitre|highlight_all:search_query }}</p>
+                            <p><strong>Episodios:</strong> {{ result.saga_episode|highlight_all:search_query }}</p>
+                        </a>
+                    
+                    {% elif result|get_type == 'Arc' %}
+                        {% if result.image_url %}
+                            <img src="{{ result.image_url }}" alt="{{ result.name }}" class="character-image" />
+                        {% endif %}
+                        <h3>{{ result.title|highlight_all:search_query }}</h3>
+                        <p><strong>Descripción:</strong> {{ result.description|highlight_all:search_query }}</p>
+                    
+                    {% elif result|get_type == 'Chapter' %}
+                        <img src="https://lafrikileria.com/blog/wp-content/uploads/2021/07/one-piece-logo.jpg" alt="One Piece Logo"
+                        style="width: 100%; max-width: 350px; height: auto; max-height: 530px; object-fit: contain; border-radius: 10px; margin-bottom: 15px;" />
+                        <h3>{{ result.title|highlight_all:search_query }}</h3>
+                        <p><strong>Número de capítulo:</strong> {{ result.number|highlight_all:search_query }}</p>
+                        <p><strong>N° Manga:</strong> {{ result.chapter|highlight_all:search_query }}</p>
+                        <p><strong>Descripción:</strong> {{ result.description|highlight_all:search_query }}</p>
+                        <p><strong>Fecha de Lanzamiento:</strong> {{ result.release_date|highlight_all:search_query }}</p>
+                        <p><strong>Saga:</strong> {{ result.saga.title|highlight_all:search_query }}</p>
+                        <p><strong>Arco:</strong> {{ result.arc.title|highlight_all:search_query }}</p>
+                    {% else %}
+                        <!-- Resultado desconocido -->
+                        <p>Tipo de resultado no reconocido: {{ result|get_type }}</p>
+                    {% endif %}
+                </section>
+            {% endfor %}
+        {% else %}
+            <!-- No se encontraron resultados -->
+            <section class="info_card character-overview">
+                <p>No se encontraron resultados para "{{ search_query }}"</p>
+            </section>
         {% endif %}
-
-        {% if arcs %}
-                {% for arc in arcs %}
-                <section class="info_card character-overview">
-                    <div>
-                        <h3>{{ arc.title }}</h3>
-                        <p><strong>Descripción:</strong> {{ arc.description }}</p>
-                    </div>
-                    </section>
-                {% endfor %} 
-        {% endif %}
-
-        {% if not characters and not fruits and not crews and not sagas and not arcs %}
-            <section class="info_card character-overview">NO SE ENCONTRARON RESULTADOS PARA "{{ search_query }}"</section>
-                 
-        {% endif %} 
-    {% endif %}
     </div>
-    {% endblock %}
+
+    <!-- Controles de paginación -->
+    <div class="pagination">
+        <span class="step-links">
+        {% if page_results.has_previous %}
+            <a href="?page=1&nombre={{ search_query }}">Primera</a>
+            <a href="?page={{ page_results.previous_page_number }}&nombre={{ search_query }}">Anterior</a>
+        {% endif %}
+        <span>Página {{ page_results.number }} de {{ page_results.paginator.num_pages }}</span>
+        {% if page_results.has_next %}
+            <a href="?page={{ page_results.next_page_number }}&nombre={{ search_query }}">Siguiente</a>
+            <a href="?page={{ page_results.paginator.num_pages }}&nombre={{ search_query }}">Última</a>
+        {% endif %}
+        </span>
+    </div>
+{% endif %}
+{% endblock %}

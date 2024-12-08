@@ -1,0 +1,14 @@
+{% extends 'WikiPage/base.html' %}
+{% block content %} 
+<div class="content">  
+    <section class="info_card character-overview">
+        <h3>{{ fruit.name }}</h3>
+        <p><strong>Descripción:</strong> {{ fruit.description }}</p>
+        <p><strong>Tipo:</strong> {{ fruit.type }}</p>
+        <p><strong>Nombre romano:</strong> {{ fruit.roman_name }}</p> 
+        {% if fruit.filename != fruit.technicalFile %}
+        <img src="{{ fruit.filename }}" alt="{{ fruit.name }}" id="fruit"/>
+        {%endif%}
+    </section>   
+</div>
+{% endblock %}

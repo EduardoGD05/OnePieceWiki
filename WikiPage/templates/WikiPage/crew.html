@@ -1,0 +1,16 @@
+{% extends 'WikiPage/base.html' %}
+{% block content %} 
+  
+<div class="content"> 
+        <section class="info_card character-overview">
+            
+            {% if crew.image_url %}
+            <img src="{{ crew.image_url }}" style="width: 100%; max-width: 350px; height: auto; max-height: 530px; object-fit: contain; border-radius: 10px; margin-bottom: 15px;"/> 
+            {% endif %}
+                
+            <h3>{{ crew.name }}</h3> 
+            <p><strong>Número de miembros:</strong> {{ crew.number }}</p> 
+            <p><strong>¿Es Yonko?:</strong> {% if crew.is_yonko %}Sí{% else %}No{% endif %}</p>
+        </section> 
+</div>
+{% endblock %}

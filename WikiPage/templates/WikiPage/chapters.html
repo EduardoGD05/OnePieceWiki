@@ -8,11 +8,27 @@
              style="width: 100%; max-width: 350px; height: auto; max-height: 530px; object-fit: contain; border-radius: 10px; margin-bottom: 15px;" />
             <h3>{{ chapter.title }}</h3>
             <p><strong>Número de capítulo:</strong> {{ chapter.number }}</p>
+            <p><strong>N° Manga:</strong> {{ chapter.chapter }}</p> 
             <p><strong>Descripción:</strong> {{ chapter.description }}</p>
             <p><strong>Fecha de Lanzamiento:</strong> {{ chapter.release_date }}</p>
             <p><strong>Saga:</strong> {{ chapter.saga.title }}</p>
             <p><strong>Arco:</strong> {{ chapter.arc.title }}</p> 
         </section>
     {% endfor %}
+    </div>
+    <div class="pagination">
+        <span class="step-links">
+            {% if chapters.has_previous %}
+                <a href="?page=1">Primera</a>
+                <a href="?page={{ chapters.previous_page_number }}">Anterior</a>
+            {% endif %}
+    
+            <span>Página {{ chapters.number }} de {{ chapters.paginator.num_pages }}</span>
+    
+            {% if chapters.has_next %}
+                <a href="?page={{ chapters.next_page_number }}">Siguiente</a>
+                <a href="?page={{ chapters.paginator.num_pages }}">Última</a>
+            {% endif %}
+        </span>
     </div>
 {% endblock %}
