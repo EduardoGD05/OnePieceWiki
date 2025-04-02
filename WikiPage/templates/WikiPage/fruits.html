@@ -1,0 +1,32 @@
+{% extends 'WikiPage/base.html' %}
+{% block content %} 
+<div class="content">
+ {% for fruit in fruits %}
+     {% if fruit.id != 2%}
+    <section class="info_card character-overview">
+        <h3>{{ fruit.name }}</h3>
+        <p><strong>Descripción:</strong> {{ fruit.description }}</p>
+        <p><strong>Tipo:</strong> {{ fruit.type }}</p>
+        <p><strong>Nombre romano:</strong> {{ fruit.roman_name }}</p> 
+        {% if fruit.filename != fruit.technicalFile %}
+        <img src="{{ fruit.filename }}" alt="{{ fruit.name }}" id="fruit"/>
+        {%endif%}
+    </section>
+    {% endif %}
+    {% endfor %}
+</div>
+    <div class="pagination">
+        <span class="step-links">
+            {% if fruits.has_previous %}
+                <a href="?page=1">Primera</a>
+                <a href="?page={{ fruits.previous_page_number }}">Anterior</a>
+            {% endif %}
+            <span>Página {{ fruits.number }} de {{ fruits.paginator.num_pages }}</span>
+    
+            {% if fruits.has_next %}
+                <a href="?page={{ fruits.next_page_number }}">Siguiente</a>
+                <a href="?page={{ fruits.paginator.num_pages }}">Última</a>
+            {% endif %} 
+        </span>
+    </div>
+{% endblock %}

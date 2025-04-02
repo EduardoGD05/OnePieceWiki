@@ -1,0 +1,22 @@
+{% extends 'WikiPage/base.html' %}
+{% block content %} 
+
+        <section class="info_card character-overview">
+            
+            {% if character.image_url %}
+            <img src="{{ character.image_url }}" alt="{{ character.name }}" class="character-image" /> 
+            {% endif %}
+            
+            <h3>{{ character.name }}</h3>
+            <p><strong>Edad:</strong> {{ character.age | default:"N/A"}}</p>
+            <p><strong>Recompensa:</strong> {{ character.bounty | default:"N/A" }}</p>
+            <p><strong>Estado:</strong> {{ character.status }}</p>
+            <a href="{% url 'crew' character.crew.id %}" >
+            <p><strong>Tripulación:</strong> </a> {{ character.crew.name}}</p>
+            {% if character.fruit.id  != 2%}
+            <a  href="{% url 'fruit' character.fruit.id %}" >
+            <p><strong>Fruto:</strong> </a> {{ character.fruit.name }}</p>
+            {% endif %}
+        </section> 
+      
+{% endblock %}

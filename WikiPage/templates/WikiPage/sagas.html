@@ -1,0 +1,22 @@
+{% extends 'WikiPage/base.html' %}
+{% block content %} 
+ <div class="content">
+    {% for saga in sagas %} 
+        <section class="info_card character-overview">
+            
+            {% if saga.image_url %}
+            <img src="{{ saga.image_url }}"/>
+            {% else %}
+            <p></p>
+            {% endif %}
+            <a href="{% url 'saga_arcs' saga.id %}"> 
+            <h3>{{ saga.title }}</h3>
+            </a>
+            <p><strong>Número de Saga:</strong> {{ saga.saga_number }}</p>
+            <p><strong>Volumenes:</strong> {{ saga.saga_volume }}</p>
+            <p><strong>Capítulos:</strong> {{ saga.saga_chapitre }}</p>
+            <p><strong>Episodios:</strong> {{ saga.saga_episode }}</p>
+        </section> 
+    {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'WikiPage/base.html' %}
+{% block content %} 
+  
+<div class="content">
+        {% for crew in crews %}
+        <section class="info_card character-overview">
+            
+            {% if crew.image_url %}
+            <img src="{{ crew.image_url }}" style="width: 100%; max-width: 350px; height: auto; max-height: 530px; object-fit: contain; border-radius: 10px; margin-bottom: 15px;"/> 
+            {% endif %}
+                
+            <h3>{{ crew.name }}</h3> 
+            <p><strong>Número de miembros:</strong> {{ crew.number | default:"N/A" }}</p> 
+            <p><strong>Emperador:</strong> {% if crew.is_yonko %}Sí{% else %}No{% endif %}</p>
+        </section>
+        {% endfor %}
+</div>
+    <div class="pagination">
+        <span class="step-links">
+            {% if crews.has_previous %}
+                <a href="?page=1">Primera</a>
+                <a href="?page={{ crews.previous_page_number }}">Anterior</a>
+            {% endif %}
+    
+            <span>Página {{ crews.number }} de {{ crews.paginator.num_pages }}</span>
+    
+            {% if crews.has_next %}
+                <a href="?page={{ crews.next_page_number }}">Siguiente</a>
+                <a href="?page={{ crews.paginator.num_pages }}">Última</a>
+            {% endif %}
+        </span>
+    </div>
+{% endblock %}

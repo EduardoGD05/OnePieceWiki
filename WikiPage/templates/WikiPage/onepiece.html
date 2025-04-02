@@ -1,0 +1,112 @@
+{% extends 'WikiPage/base.html' %}
+{% block content %}   
+
+   <div id="summary_container">   
+
+      <h3> One Piece Wiki </h3> 
+
+      <p>Bienvenido(a) el lugar perfecto para conocer todo sobre el mundo de One Piece, la legendaria serie de Eiichiro Oda. Aquí encontrarás información detallada sobre las tripulaciones, personajes, frutas, sagas, arcos, capítulos y todo lo relacionado con la Gran Era de los Piratas.</p>
+      <p> <strong> ¿Eres nuevo(a) en el fandom de One Piece?</strong></p>
+      <p> Esta Wiki te servirá como guía para descubrir la historia, sus misterios y el viaje de Monkey D. Luffy en busca del legendario tesoro "One Piece". Y si ya eres fan, podrás profundizar en cada detalle del universo de esta gran aventura.</p>
+      
+      <h1> ¡Conoce a los sombrero de paja!</h1>
+   </div>
+    <h1 class="page_title"></h1>
+      <div>
+         <div id="crew_container">   
+            <h1> WANTED </h1>
+               <div class="container_item">
+                  <a href="{% url 'character' 1 %}"> 
+                     <div class="card">
+                        <p>
+                        <img src=https://i.pinimg.com/564x/90/a7/f6/90a7f67864acea71fb5ffed6aa6298cb.jpg>
+                        Luffy </p>
+                     </div>
+                  </a>
+               </div>
+            
+             <div class="container_item">
+            <a href="{% url 'character' 2 %}"> 
+                <div class="card">
+         <p>
+            <img  src=https://i.pinimg.com/736x/6c/3e/43/6c3e435b6c1c05cdd09f2147bf2366fe.jpg>
+            Zoro </p>
+               </div>
+            </a>
+            </div>
+              
+             <div class="container_item">
+            <a href="{% url 'character' 3 %}"> 
+                <div class="card">
+         <p>
+            <img  src=https://static.wikia.nocookie.net/saintfairypirates/images/d/dd/Nami.png/revision/latest?cb=20170115125035>
+            Nami </p>
+               </div>
+            </a> </div>
+               
+                <div class="container_item">
+            <a href="{% url 'character' 4 %}"> 
+               <div class="card">
+         <p>
+            <img  src=https://static.wikia.nocookie.net/fairypirates/images/5/53/Usopp.png/revision/latest?cb=20161022095049>
+            Ussop </p>
+               </div> 
+               </a></div>
+               
+             <div class="container_item">
+            <a href="{% url 'character' 5 %}"> 
+                <div class="card">
+         <p>
+            <img src=https://i.pinimg.com/736x/8a/d9/f8/8ad9f8400a8bf8221aee075cd38bffa1.jpg>
+            Sanji </p>
+               </div>
+              </a> </div>
+               
+             <div class="container_item">
+            <a href="{% url 'character' 6 %}"> 
+                <div class="card">
+         <p>
+            <img  src=https://i.pinimg.com/originals/c0/2b/62/c02b629721224f3b386b62aadb126807.jpg>
+            Chopper </p>
+               </div>
+               <a/> </div> 
+               
+                <div class="container_item">
+            <a href="{% url 'character' 7 %}"> 
+               <div class="card">
+         <p>
+            <img  src=https://i.pinimg.com/564x/b1/9d/1d/b19d1d3e9a5d770fc2f90e7089f1e0ca.jpg>
+            Robin </p>
+               </div>
+               </a> </div>
+               
+                <div class="container_item">
+            <a href="{% url 'character' 8 %}"> 
+                <div class="card">
+         <p class="crew_name">
+            <img  src=https://static.wikia.nocookie.net/five-world-war/images/4/4f/Franky%27s_burned_face.png/revision/latest/scale-to-width-down/649?cb=20170823032730>
+            Franky </p>
+               </div>
+               </a> </div>
+               
+               
+                <div class="container_item">
+            <a href="{% url 'character' 9 %}"> 
+                <div class="card">
+         <p>
+            <img  src=https://static.wikia.nocookie.net/onepiece-fairytail/images/5/55/Brook.png/revision/latest?cb=20200404131618>
+            Brook </p>
+               </div>
+               </a> </div>
+               
+               
+               <div class="container_item">
+            <a href="{% url 'character' 10 %}"> 
+                <div class="card">
+         <p>
+            <img  src=https://i.pinimg.com/736x/64/ec/d5/64ecd5f74c28b7f5f89d54b41bb5b13d.jpg>
+            Jinbe </p>
+               </div>
+               </a></div> 
+{% endblock %}
+ 

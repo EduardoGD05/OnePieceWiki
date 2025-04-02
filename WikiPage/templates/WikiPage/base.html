@@ -1,0 +1,51 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnePiece Wiki</title>
+    {% load static %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Texturina:opsz,wght@12..72,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'WikiPage/styles.css' %}">
+</head>
+<body id="back-container"> 
+  <header>
+    
+    <div class="navbar">  
+        <li id="logo">
+            <a href="/">
+            <img id="title_img" src=https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/7eaf583b-db7a-4d9a-952d-f6f3788fe15d/da0zqyl-7ed253b6-0305-4bcc-88d9-04c7de5f0033.png/v1/fill/w_892,h_896/straw_hat_pirates_jolly_roger_by_verbalemissions_da0zqyl-pre.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9OTA0IiwicGF0aCI6IlwvZlwvN2VhZjU4M2ItZGI3YS00ZDlhLTk1MmQtZjZmMzc4OGZlMTVkXC9kYTB6cXlsLTdlZDI1M2I2LTAzMDUtNGJjYy04OGQ5LTA0YzdkZTVmMDAzMy5wbmciLCJ3aWR0aCI6Ijw9OTAwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.FtNPhSPeV8eVihRR3LI7HbDYwE88TL2k9Xx7Rh_BSbY> <!--https://www.dafont.com/forum/attach/orig/9/9/996899.png-->
+            <h1>OnePiece Wiki</a><h1></a>
+        </li>
+                <!-- Barra de búsqueda -->
+  <form method="GET" action="{% url 'global_search' %}" class="search-bar" onsubmit="return validateSearch()">
+    <input type="text" name="nombre" placeholder="Buscar..." id="search-input" value="{{ search_query }}">
+    <button type="submit">Buscar</button>
+</form> 
+        <nav>
+            <ul class="nav-links">
+                <li><a href="/crews">Tripulaciones</a></li>
+                <li><a href="{% url 'characters' %}">Personajes</a></li>
+                <li><a href="{% url 'fruits' %}">Frutas</a></li>
+                <li><a href="{% url 'sagas' %}">Sagas</a></li>
+                <li><a href="{% url 'arcs' %}">Arcos</a></li>
+                <li><a href="{% url 'chapters' %}">Capítulos</a></li>
+            </ul>
+        </nav> 
+
+<script>
+function validateSearch() {
+    const searchInput = document.getElementById("search-input");
+    return searchInput.value.trim() !== ""; // Si el campo está vacío, retorna false y no envía el formulario
+}
+</script>
+    </div>
+</header>
+ 
+    <main id="main-container"> 
+            {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>
