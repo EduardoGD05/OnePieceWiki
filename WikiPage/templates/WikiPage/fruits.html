@@ -21,12 +21,20 @@
                 <a href="?page=1">Primera</a>
                 <a href="?page={{ fruits.previous_page_number }}">Anterior</a>
             {% endif %}
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 8db554aa88061167e621b44a16477069e9491d13
             <span>Página {{ fruits.number }} de {{ fruits.paginator.num_pages }}</span>
     
             {% if fruits.has_next %}
                 <a href="?page={{ fruits.next_page_number }}">Siguiente</a>
                 <a href="?page={{ fruits.paginator.num_pages }}">Última</a>
+<<<<<<< HEAD
             {% endif %} 
+=======
+            {% endif %}
+>>>>>>> 8db554aa88061167e621b44a16477069e9491d13
         </span>
     </div>
 {% endblock %}

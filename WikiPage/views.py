@@ -6,8 +6,13 @@ from django.utils.safestring import mark_safe
 from django.core.paginator import Paginator
 
 def home(request):
+<<<<<<< HEAD
     return render(request,'WikiPage/onepiece.html',{'page_title': ''})
  
+=======
+    return render(request,'WikiPage/onepiece.html',{'page_title': 'CATEGORÍAS'})
+
+>>>>>>> 8db554aa88061167e621b44a16477069e9491d13
 def crew_list(request):
     crews = Crew.objects.all()
     paginator = Paginator(crews, 10)  

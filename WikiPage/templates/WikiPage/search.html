@@ -14,6 +14,7 @@
                         {% endif %}
                         <h3>{{ result.name|highlight_all:search_query }}</h3>
                         <p><strong>Edad:</strong> {{ result.age|default:"N/A"|highlight_all:search_query }}</p>
+<<<<<<< HEAD
                         <p><strong>Recompensa: </strong> {{ result.bounty|default:"N/A"|highlight_all:search_query }}</p>
                         <p><strong>Estado:</strong> {{ result.status }}</p>
                         {% if result.crew %}
@@ -25,6 +26,23 @@
                                 <p><strong>Fruta:</strong> {{ result.fruit.name|highlight_all:search_query }}</p>
                         {% else %}
                             <p><strong>Fruta:</strong> N/A</p>
+=======
+                        <p><strong>Recompensa:</strong> {{ result.bounty|default:"N/A"|highlight_all:search_query }}</p>
+                        <p><strong>Estado:</strong> {{ result.status }}</p>
+                        {% if result.crew %}
+                            <a href="{% url 'crew' result.crew.id %}">
+                                <p><strong>Tripulación:</strong> {{ result.crew.name|highlight_all:search_query }}</p>
+                            </a>
+                        {% else %}
+                            <p><strong>Tripulación:</strong> N/A</p>
+                        {% endif %}
+                        {% if result.fruit %}
+                            <a href="{% url 'fruit' result.fruit.id %}">
+                                <p><strong>Fruto:</strong> {{ result.fruit.name|highlight_all:search_query }}</p>
+                            </a>
+                        {% else %}
+                            <p><strong>Fruto:</strong> N/A</p>
+>>>>>>> 8db554aa88061167e621b44a16477069e9491d13
                         {% endif %}
                     
                     {% elif result|get_type == 'Fruit' %}
@@ -45,6 +63,10 @@
                         <p><strong>¿Es Yonko?:</strong> {{ result.is_yonko|yesno:"Sí,No" }}</p>
                     
                     {% elif result|get_type == 'Saga' %}
+<<<<<<< HEAD
+=======
+                        <a href="{% url 'saga_arcs' result.id %}" class="info_card">
+>>>>>>> 8db554aa88061167e621b44a16477069e9491d13
                             {% if result.image_url %}
                                 <img src="{{ result.image_url }}" alt="{{ result.title }}" />
                             {% endif %}
@@ -53,18 +75,27 @@
                             <p><strong>Volúmenes:</strong> {{ result.saga_volume|highlight_all:search_query }}</p>
                             <p><strong>Capítulos:</strong> {{ result.saga_chapitre|highlight_all:search_query }}</p>
                             <p><strong>Episodios:</strong> {{ result.saga_episode|highlight_all:search_query }}</p>
+<<<<<<< HEAD
                         
+=======
+                        </a>
+                    
+>>>>>>> 8db554aa88061167e621b44a16477069e9491d13
                     {% elif result|get_type == 'Arc' %}
                         {% if result.image_url %}
                             <img src="{{ result.image_url }}" alt="{{ result.name }}" class="character-image" />
                         {% endif %}
                         <h3>{{ result.title|highlight_all:search_query }}</h3>
+<<<<<<< HEAD
                         <p><strong>Descripción:</strong> 
                             {% if result.description %}
                                 {{ result.description|highlight_all:search_query }}
                             {% else %}
                                 N/A
                             {% endif %}</p>
+=======
+                        <p><strong>Descripción:</strong> {{ result.description|highlight_all:search_query }}</p>
+>>>>>>> 8db554aa88061167e621b44a16477069e9491d13
                     
                     {% elif result|get_type == 'Chapter' %}
                         <img src="https://lafrikileria.com/blog/wp-content/uploads/2021/07/one-piece-logo.jpg" alt="One Piece Logo"
