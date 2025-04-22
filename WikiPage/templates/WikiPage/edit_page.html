@@ -1,0 +1,165 @@
+{% extends 'WikiPage/base.html' %} {% block content %}
+<div class="base_container">
+  <form method="POST" action="{% url 'edit_page' page.id %}">
+    {% csrf_token %}
+    <div class="form-group">
+      <h1 id="wiki_title">{{ page.title }}</h1>
+      <input type="hidden" name="title" value="{{ page.title }}" />
+    </div>
+
+    <!-- Sección para la URL de la imagen principal -->
+    <div class="form-group">
+      <label for="main-image-url">URL de la Imagen Principal:</label>
+      <input
+        type="url"
+        id="main-image-url"
+        name="main_image_url"
+        value="{{ page.main_image_url }}"
+        placeholder="Ingresa la URL de la imagen principal..."
+        style="width: 100%; padding: 10px; margin-bottom: 10px"
+      />
+    </div>
+
+    <div id="modules-container">
+      <h3>Secciones</h3>
+
+      <!-- Secciones existentes -->
+      {% for section in page.sections.all %}
+      <div class="module">
+        <input type="hidden" name="section_ids[]" value="{{ section.id }}" />
+        {% if section.title != "main" %}
+        <label for="module-title-{{ section.id }}">Título de la Sección:</label>
+        <input
+          type="text"
+          id="module-title-{{ section.id }}"
+          name="module_titles[]"
+          value="{{ section.title }}"
+          style="width: 100%; padding: 10px; margin-bottom: 10px"
+        />
+        {% endif %}
+        <label for="module-content-{{ section.id }}"
+          >Contenido de la Sección:</label
+        >
+        <textarea
+          id="module-content-{{ section.id }}"
+          name="module_contents[]"
+          rows="5"
+          style="
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            resize: none;
+            overflow: hidden;
+          "
+        >
+{{ section.content }}</textarea
+        >
+      </div>
+      {% endfor %}
+    </div>
+    <!-- Botón para agregar nuevas secciones -->
+    <button type="button" id="add-module" class="btn-add-module">
+      Agregar Sección
+    </button>
+
+    <button type="submit" class="btn-submit">Guardar Cambios</button>
+  </form>
+</div>
+
+<script>
+  const modulesContainer = document.getElementById("modules-container");
+  const addModuleButton = document.getElementById("add-module");
+  let moduleCount = parseInt("{{ page.sections.count }}", 10); // Inicia con el número de secciones existentes
+
+  // Función para expandir automáticamente el textarea
+  function autoExpand(textarea) {
+    textarea.style.height = "auto"; // Restablece la altura para calcular el nuevo tamaño
+    textarea.style.height = textarea.scrollHeight + "px"; // Ajusta la altura al contenido
+  }
+
+  // Aplica autoExpand a los textarea existentes al cargar la página
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("textarea").forEach((textarea) => {
+      autoExpand(textarea); // Ajusta la altura inicial
+      textarea.addEventListener("input", () => autoExpand(textarea)); // Ajusta mientras se escribe
+    });
+  });
+
+  // Función para agregar un nuevo módulo
+  addModuleButton.addEventListener("click", () => {
+    moduleCount++;
+    const moduleDiv = document.createElement("div");
+    moduleDiv.classList.add("module");
+    moduleDiv.innerHTML = `
+      <input type="hidden" name="section_ids[]" value="new-${moduleCount}" />
+      <label for="module-title-${moduleCount}">Título de la Sección:</label>
+      <input
+        type="text"
+        id="module-title-${moduleCount}"
+        name="module_titles[]"
+        placeholder="Título de la Sección..."
+        style="width: 100%; padding: 10px; margin-bottom: 10px;"
+      />
+      <label for="module-content-${moduleCount}">Contenido de la Sección:</label>
+      <textarea
+        id="module-content-${moduleCount}"
+        name="module_contents[]"
+        rows="1"
+        placeholder="Escribe el contenido de la Sección..."
+        style="width: 100%; padding: 10px; margin-bottom: 10px; resize: none; overflow: initial;"
+      ></textarea>
+    `;
+    modulesContainer.appendChild(moduleDiv);
+  });
+
+  // Función para eliminar una sección
+  function removeModule(event) {
+    const moduleDiv = event.target.closest(".module");
+    if (moduleDiv) {
+      moduleDiv.remove();
+    }
+  }
+
+  // Agregar eventos a los botones `[X]` de las secciones existentes
+  document.querySelectorAll(".btn-remove-module").forEach((button) => {
+    button.addEventListener("click", removeModule);
+  });
+</script>
+
+<style>
+  .btn-add-module {
+    padding: 10px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 15px;
+  }
+
+  .btn-add-module:hover {
+    background-color: #218838;
+  }
+
+  .btn-submit {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .btn-submit:hover {
+    background-color: #0056b3;
+  }
+
+  .module {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+</style>
+{% endblock %}

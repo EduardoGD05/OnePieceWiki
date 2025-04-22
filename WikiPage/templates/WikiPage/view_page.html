@@ -1,0 +1,24 @@
+{% extends 'WikiPage/base.html' %} {% block content %}
+<div class="base_container">
+  <h1 id="wiki_title">{{ page.title }}</h1>
+  {% if page.main_image_url %}
+  <img id="main_image" src="{{ page.main_image_url }}" alt="Imagen Principal" />
+  {% endif %}
+
+  <div class="sections">
+    {% for section in page.sections.all %}
+    <div class="section">
+      {% if section.title != "main" %}
+      <h2>{{ section.title }}</h2>
+      {% endif %}
+
+      <p>{{ section.content }}</p>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% if user.is_authenticated %}
+  <a href="{% url 'edit_page' page.id %}" class="btn-edit">Editar Página</a>
+  {% endif %}
+</div>
+{% endblock %}

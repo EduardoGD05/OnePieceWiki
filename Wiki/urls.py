@@ -3,6 +3,7 @@ from django.urls import path , include
 from django.conf import settings
 from django.conf.urls.static import static
 from WikiPage import views
+from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -20,6 +21,14 @@ urlpatterns = [
     path('arcs/', views.arc_list, name='arcs'),
     path('arc/<int:id>/chapters/', views.arc_chapter, name='arc_chapter'),
     path('chapters/', views.chapter_list, name='chapters'),
+    path('login/', views.login, name='login'),
+    path('signup/', views.signup, name='signup'),
+    path('logout/', LogoutView.as_view(next_page='/'), name='logout'), 
+    path('create-page/', views.create_page, name='create_page'),
+    path('search-titles/', views.search_titles, name='search_titles'),
+    path('page/<int:page_id>/', views.view_page, name='view_page'),
+    path('page/<int:page_id>/edit/', views.edit_page, name='edit_page')
+
 ]
 
 if settings.DEBUG:

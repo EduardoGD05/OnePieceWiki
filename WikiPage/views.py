@@ -1,18 +1,19 @@
-from django.shortcuts import render, get_object_or_404  
-from .models import Crew, Fruit, Character, Saga, Arc, Chapter
+from django.shortcuts import render, get_object_or_404, redirect  
+from .models import Crew, Fruit, Character, Saga, Arc, Chapter, Page, Section
 from django.db.models import Q
 import re
 from django.utils.safestring import mark_safe
 from django.core.paginator import Paginator
+from django.contrib import messages
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+
 
 def home(request):
-<<<<<<< HEAD
     return render(request,'WikiPage/onepiece.html',{'page_title': ''})
  
-=======
-    return render(request,'WikiPage/onepiece.html',{'page_title': 'CATEGORÍAS'})
-
->>>>>>> 8db554aa88061167e621b44a16477069e9491d13
 def crew_list(request):
     crews = Crew.objects.all()
     paginator = Paginator(crews, 10)  
@@ -153,3 +154,221 @@ def global_search(request):
         'search_query': search_query,
         'page_results': page_results,  
     }) 
+def view_page(request, page_id):
+    page = get_object_or_404(Page, id=page_id)
+    return render(request, 'WikiPage/view_page.html', {
+        'page': page
+    })
+
+def login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+
+        # Authenticate the user
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            # Log the user in
+            auth_login(request, user)
+            messages.success(request, "Inicio de sesión exitoso.")
+            return redirect('/')  # Redirect to the homepage or another page
+        else:
+            messages.error(request, "Nombre de usuario o contraseña incorrectos.")
+            return redirect('login') 
+    return render(request,'WikiPage/login.html',{'page_title': 'Login'})
+def signup(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
+
+        if password != confirm_password:
+            messages.error(request, "Las contraseñas no coinciden.")
+            return redirect('signup')
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "El nombre de usuario ya está en uso.")
+            return redirect('signup')
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "El correo electrónico ya está registrado.")
+            return redirect('signup')
+
+        # Crear el usuario
+        user = User.objects.create_user(username=username, email=email, password=password)
+        user.save()
+        messages.success(request, "Usuario registrado exitosamente. Ahora puedes iniciar sesión.")
+        return redirect('login')
+
+    return render(request,'WikiPage/signup.html',{'page_title': 'Signup'})
+
+@login_required
+def create_page(request):
+    # Obtener el título desde los parámetros GET o POST
+    title = request.POST.get('title', request.GET.get('title', '').strip())
+
+    if request.method == 'POST':
+        # Si el título no está definido, mostrar un error
+        if not title:
+            messages.error(request, "El título de la página es obligatorio.")
+            return redirect('create_page')
+
+        # Crear la página
+        main_image_url = request.POST.get('main_image_url', '').strip()
+
+        # Crear la página en la base de datos con el usuario autenticado
+        page = Page.objects.create(
+            title=title,
+            main_image_url=main_image_url,
+            created_by=request.user,  # Asignar el usuario autenticado
+        )
+
+        # Obtener las listas de datos del formulario
+        section_ids = request.POST.getlist('section_ids[]')  # IDs de las secciones
+        section_titles = request.POST.getlist('module_titles[]')  # Títulos de las secciones
+        section_contents = request.POST.getlist('module_contents[]')  # Contenidos de las secciones
+
+        # Depuración: Imprimir los datos enviados
+        print("section_ids:", section_ids)
+        print("section_titles:", section_titles)
+        print("section_contents:", section_contents)
+
+        # Verifica que las listas tengan el mismo tamaño
+        if len(section_ids) != len(section_contents):
+            messages.error(request, "Error: Los datos enviados no son consistentes.")
+            page.delete()  # Eliminar la página si hay un error
+            return redirect('create_page')
+
+        # Procesar las secciones
+        for index, section_id in enumerate(section_ids):
+            content = section_contents[index].strip()
+            title = section_titles[index].strip() if index > 0 else "main"  # La primera sección siempre es "main"
+
+            # Ignorar secciones sin contenido
+            if not content:
+                continue
+
+            # Crear una nueva sección
+            Section.objects.create(
+                page=page,
+                title=title,
+                content=content,
+                order=index,  # Usar el índice como orden
+                type='text',  # Tipo fijo como "text"
+            )
+
+        messages.success(request, "Página creada exitosamente.")
+        return redirect('view_page', page_id=page.id)
+
+    # Pasar el título al contexto
+    return render(request, 'WikiPage/create_page.html', {
+        'title': title if title else "Título por Defecto",  # Usar un título predeterminado si no se proporciona
+        'range': range(5)  # Pasar un rango para nuevas secciones
+    })
+
+def search_titles(request):
+    query = request.GET.get('q', '').strip()
+    results = []
+
+    if query:
+        # Buscar en los modelos relevantes
+        characters = Character.objects.filter(name__icontains=query).values('id', 'name')
+        fruits = Fruit.objects.filter(name__icontains=query).values('id', 'name')
+        crews = Crew.objects.filter(name__icontains=query).values('id', 'name')
+        sagas = Saga.objects.filter(title__icontains=query).values('id', 'title')
+        arcs = Arc.objects.filter(title__icontains=query).values('id', 'title')
+        chapters = Chapter.objects.filter(title__icontains=query).values('id', 'title')
+
+        # Combinar los resultados y agregar display_name
+        results = (
+            list(characters) +
+            list(fruits) +
+            list(crews) +
+            [{'id': saga['id'], 'display_name': saga['title']} for saga in sagas] +
+            [{'id': arc['id'], 'display_name': arc['title']} for arc in arcs] +
+            [{'id': chapter['id'], 'display_name': chapter['title']} for chapter in chapters]
+        )
+
+        # Agregar display_name para los resultados con 'name'
+        for result in results:
+            if 'name' in result:
+                result['display_name'] = result['name']
+
+    return render(request, 'WikiPage/search_titles.html', {
+        'page_title': 'Buscar Títulos',
+        'query': query,
+        'results': results
+    }) 
+ 
+@login_required
+def edit_page(request, page_id):
+    page = get_object_or_404(Page, id=page_id)
+
+    if request.method == 'POST':
+        # Actualizar la página
+        page.main_image_url = request.POST.get('main_image_url', page.main_image_url)
+        page.save()
+
+        # Obtener las listas de datos del formulario
+        section_ids = request.POST.getlist('section_ids[]')  # IDs de las secciones
+        section_titles = request.POST.getlist('module_titles[]')  # Títulos de las secciones
+        section_contents = request.POST.getlist('module_contents[]')  # Contenidos de las secciones
+
+        # Depuración: Imprimir los datos enviados
+        print("section_ids:", section_ids)
+        print("section_titles:", section_titles)
+        print("section_contents:", section_contents)
+
+        # Verifica que las listas tengan el mismo tamaño
+        if len(section_ids) != len(section_contents):
+            messages.error(request, "Error: Los datos enviados no son consistentes.")
+            return redirect('edit_page', page_id=page.id)
+
+        # Procesar las secciones
+        title_index = 0  # Índice para los títulos (solo para secciones que no son "main")
+        for index, section_id in enumerate(section_ids):
+            content = section_contents[index].strip()
+
+            # Ignorar secciones sin contenido
+            if not content:
+                continue
+
+            if section_id.startswith("new-"):
+                # Crear una nueva sección
+                title = section_titles[title_index].strip() if title_index < len(section_titles) else "Sin título"
+                Section.objects.create(
+                    page=page,
+                    title=title,
+                    content=content,
+                    order=index,  # Usar el índice como orden
+                    type='text',  # Tipo fijo como "text"
+                )
+                title_index += 1  # Incrementar el índice de títulos solo para nuevas secciones
+            else:
+                # Actualizar una sección existente
+                try:
+                    section = Section.objects.get(id=section_id, page=page)
+                    if section.title != "main":
+                        title = section_titles[title_index].strip() if title_index < len(section_titles) else section.title
+                        title_index += 1  # Incrementar el índice de títulos solo para secciones no "main"
+                    else:
+                        title = "main"  # Mantener el título "main" para la sección principal
+
+                    # Solo actualizar si los datos han cambiado
+                    if section.title != title or section.content != content or section.order != index:
+                        section.title = title
+                        section.content = content
+                        section.order = index  # Actualizar el orden
+                        section.save()
+                except Section.DoesNotExist:
+                    messages.error(request, f"Error: No se encontró la sección con ID {section_id}.")
+                    continue
+
+        messages.success(request, "Página actualizada exitosamente.")
+        return redirect('view_page', page_id=page.id)
+
+    return render(request, 'WikiPage/edit_page.html', {
+        'page': page,
+        'range': range(5)  # Pasar un rango para nuevas secciones
+    })

@@ -12,19 +12,10 @@
             <p><strong>Recompensa:</strong> {{ character.bounty | default:"N/A" }}</p>
             <p><strong>Estado:</strong> {{ character.status }}</p>
             <a href="{% url 'crew' character.crew.id %}" >
-<<<<<<< HEAD
             <p><strong>Tripulación:</strong> </a> {{ character.crew.name}}</p>
             {% if character.fruit.id  != 2%}
             <a  href="{% url 'fruit' character.fruit.id %}" >
             <p><strong>Fruto:</strong> </a> {{ character.fruit.name }}</p>
-=======
-            <p><strong>Tripulación:</strong> {{ character.crew.name}}</p>
-            </a>
-            {% if character.fruit.id  != 2%}
-            <a  href="{% url 'fruit' character.fruit.id %}" >
-            <p><strong>Fruto:</strong> {{ character.fruit.name }}</p>
-            </a>
->>>>>>> 8db554aa88061167e621b44a16477069e9491d13
             {% endif %}
         </section> 
       

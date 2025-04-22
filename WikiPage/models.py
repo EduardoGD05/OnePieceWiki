@@ -82,3 +82,27 @@ class Chapter(models.Model):
 
     def __str__(self):
         return f"{self.title} (Capítulo {self.number})"
+    
+
+    # WIKI
+class Page(models.Model):
+    title = models.CharField(max_length=255)
+    main_image_url = models.URLField(blank=True, null=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+class Section(models.Model):
+    page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name='sections')
+    title = models.CharField(max_length=255, default="Sin título")
+    content = models.TextField()
+    type = models.CharField(max_length=50, choices=[('text', 'Texto'), ('image', 'Imagen'), ('video', 'Video')])
+    order = models.PositiveIntegerField(default=0)  # Campo para ordenar las secciones
+
+    class Meta:
+        ordering = ['order']  # Ordenar por el campo 'order'
+
+    def __str__(self):
+        return f"{self.title} ({self.type})"

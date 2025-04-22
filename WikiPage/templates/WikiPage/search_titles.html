@@ -1,0 +1,35 @@
+{% extends 'WikiPage/base.html' %} {% block content %}
+<div id="summary_container">
+  <h1 id="title-search-title">Buscar Títulos</h1>
+  <form
+    method="GET"
+    action="{% url 'search_titles' %}"
+    class="search-bar"
+    style="display: flex; align-items: center"
+  >
+    <input
+      type="text"
+      name="q"
+      id="search-input"
+      placeholder="Escribe para buscar un título..."
+      autocomplete="off"
+      value="{{ query|default:'' }}"
+      style="flex: 1; padding: 10px; margin-right: 10px"
+    />
+    <button type="submit" class="btn-search">Buscar</button>
+  </form>
+  <div id="title-results">
+    {% if query and results %} {% for result in results %}
+    <div class="search-result">
+      <h3>{{ result.display_name }}</h3>
+      <form method="GET" action="{% url 'create_page' %}">
+        <input type="hidden" name="title" value="{{ result.display_name }}" />
+        <button type="submit">Crear Página</button>
+      </form>
+    </div>
+    {% endfor %} {% elif query %}
+    <p>No se encontraron resultados para "{{ query }}".</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -3,7 +3,6 @@
  <div class="content">
      
     {% for arc in arcs %} 
-<<<<<<< HEAD
         <section class="info_card character-overview">
             {% if arc.image_url %}
                 <img src="{{ arc.image_url }}" /> 
@@ -29,16 +28,5 @@
                 <a href="?page={{ arcs.paginator.num_pages }}">Última</a>
             {% endif %}
         </span>
-=======
-            <a href="{% url 'arc_chapter' arc.id %}" class="info_card"  > 
-        <section class=" character-overview">
-            {% if arc.image_url %}
-                <img src="{{ arc.image_url }}" /> 
-            {% endif %}
-            <h3>{{ arc.title }}</h3> 
-            <p><strong>Descripción:</strong> {{ arc.description | default:"N/A"}}</p> 
-        </section> 
-    {% endfor %}
->>>>>>> 8db554aa88061167e621b44a16477069e9491d13
     </div>
 {% endblock %}

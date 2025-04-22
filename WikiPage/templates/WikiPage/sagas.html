@@ -2,35 +2,21 @@
 {% block content %} 
  <div class="content">
     {% for saga in sagas %} 
-<<<<<<< HEAD
         <section class="info_card character-overview">
-=======
-    <a href="{% url 'saga_arcs' saga.id %}" class="info_card"  > 
-        <section class=" character-overview">
->>>>>>> 8db554aa88061167e621b44a16477069e9491d13
             
             {% if saga.image_url %}
             <img src="{{ saga.image_url }}"/>
             {% else %}
             <p></p>
             {% endif %}
-<<<<<<< HEAD
             <a href="{% url 'saga_arcs' saga.id %}"> 
             <h3>{{ saga.title }}</h3>
             </a>
-=======
-            
-            <h3>{{ saga.title }}</h3>
->>>>>>> 8db554aa88061167e621b44a16477069e9491d13
             <p><strong>Número de Saga:</strong> {{ saga.saga_number }}</p>
             <p><strong>Volumenes:</strong> {{ saga.saga_volume }}</p>
             <p><strong>Capítulos:</strong> {{ saga.saga_chapitre }}</p>
             <p><strong>Episodios:</strong> {{ saga.saga_episode }}</p>
         </section> 
-<<<<<<< HEAD
-=======
-        </a>
->>>>>>> 8db554aa88061167e621b44a16477069e9491d13
     {% endfor %}
     </div>
 {% endblock %}
