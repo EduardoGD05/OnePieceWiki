@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect  
 from .models import Crew, Fruit, Character, Saga, Arc, Chapter, Page, Section
-from django.db.models import Q
+from django.db.models import Q,Exists, OuterRef
 import re
 from django.utils.safestring import mark_safe
 from django.core.paginator import Paginator
@@ -16,13 +16,17 @@ def home(request):
  
 def crew_list(request):
     crews = Crew.objects.all()
+    for crew in crews:
+     crew.exists = Page.objects.filter(title=crew.name).exists()
     paginator = Paginator(crews, 10)  
     page_number = request.GET.get('page') 
     page_crews = paginator.get_page(page_number) 
     return render(request,'WikiPage/crews.html',{'page_title':'TRIPULACIONES DE ONE PIECE', 'crews':page_crews})
 
 def fruits_list(request):
-    fruits =Fruit.objects.all()
+    fruits =Fruit.objects.all() 
+    for fruit in fruits:
+        fruit.exists = Page.objects.filter(title=fruit.name).exists()
     paginator = Paginator(fruits, 10)  
     page_number = request.GET.get('page') 
     page_fruits = paginator.get_page(page_number) 
@@ -30,24 +34,36 @@ def fruits_list(request):
     
 def character_list(request):
     characters = Character.objects.all()
-    paginator = Paginator(characters, 10)  
-    page_number = request.GET.get('page') 
-    page_characters = paginator.get_page(page_number) 
-    return render(request,'WikiPage/characters.html',{'page_title':'PERSONAJES', 'characters':page_characters})
+    for character in characters:
+        character.exists = Page.objects.filter(title=character.name).exists()
+        character.crew.exists = Page.objects.filter(title=character.crew.name).exists() if character.crew else False
+        character.fruit.exists = Page.objects.filter(title=character.fruit.name).exists() if character.fruit else False
+
+    paginator = Paginator(characters, 10)
+    page_number = request.GET.get('page')
+    page_characters = paginator.get_page(page_number)
+
+    return render(request, 'WikiPage/characters.html', {'page_title': 'PERSONAJES', 'characters': page_characters})
     
 def saga_list (request):
-    sagas = Saga.objects.all()
+    sagas = Saga.objects.all() 
+    for saga in sagas:
+        saga.exists = Page.objects.filter(title=saga.title).exists()
     return render(request, 'WikiPage/sagas.html', {'page_title':'SAGAS DE ONE PIECE', 'sagas':sagas})
     
 def arc_list(request):
     arcs = Arc.objects.all()
+    for arc in arcs:
+        arc.exists = Page.objects.filter(title=arc.title).exists()
     paginator = Paginator(arcs, 10)  
     page_number = request.GET.get('page') 
     page_arcs = paginator.get_page(page_number) 
     return render(request,'WikiPage/arcs.html',{'page_title':'ARCOS DE ONE PIECE', 'arcs':page_arcs})
     
 def chapter_list(request):
-    chapters = Chapter.objects.all()
+    chapters = Chapter.objects.all() 
+    for chapter in chapters:
+        chapter.exists = Page.objects.filter(title=chapter.title).exists()
     paginator = Paginator(chapters, 10)  
     page_number = request.GET.get('page') 
     page_chapters = paginator.get_page(page_number) 
@@ -147,6 +163,12 @@ def global_search(request):
     page_number = request.GET.get('page', 1)  # Obtener la página actual
     page_results = paginator.get_page(page_number)
     
+    # Obtener los títulos ya existentes en el modelo Page
+    existing_titles = Page.objects.values_list('title', flat=True)
+
+    # Agregar un atributo "exists" a cada personaje
+    for character in characters:
+        character.exists = character.name in existing_titles
 
     # Renderizar resultados
     return render(request, 'WikiPage/search.html', {
@@ -154,11 +176,20 @@ def global_search(request):
         'search_query': search_query,
         'page_results': page_results,  
     }) 
-def view_page(request, page_id):
-    page = get_object_or_404(Page, id=page_id)
+def view_page(request, page_name):
+    page = get_object_or_404(Page, title=page_name)
     return render(request, 'WikiPage/view_page.html', {
         'page': page
     })
+
+# Asegúrate de que las redirecciones en otras funciones utilicen el título de la página.
+# Por ejemplo:
+# return redirect('view_page', page_name=page.title)
+
+def check_page_exists(request):
+    title = request.GET.get('title', '').strip()
+    exists = Page.objects.filter(title=title).exists()
+    return JsonResponse({'exists': exists})
 
 def login(request):
     if request.method == 'POST':
@@ -242,6 +273,10 @@ def create_page(request):
 
         # Procesar las secciones
         for index, section_id in enumerate(section_ids):
+            # Verificar que el índice exista en las otras listas
+            if index >= len(section_contents):
+                continue
+
             content = section_contents[index].strip()
             title = section_titles[index].strip() if index > 0 else "main"  # La primera sección siempre es "main"
 
@@ -259,7 +294,7 @@ def create_page(request):
             )
 
         messages.success(request, "Página creada exitosamente.")
-        return redirect('view_page', page_id=page.id)
+        return redirect('view_page', page_name=page.title)
 
     # Pasar el título al contexto
     return render(request, 'WikiPage/create_page.html', {
@@ -272,13 +307,16 @@ def search_titles(request):
     results = []
 
     if query:
-        # Buscar en los modelos relevantes
-        characters = Character.objects.filter(name__icontains=query).values('id', 'name')
-        fruits = Fruit.objects.filter(name__icontains=query).values('id', 'name')
-        crews = Crew.objects.filter(name__icontains=query).values('id', 'name')
-        sagas = Saga.objects.filter(title__icontains=query).values('id', 'title')
-        arcs = Arc.objects.filter(title__icontains=query).values('id', 'title')
-        chapters = Chapter.objects.filter(title__icontains=query).values('id', 'title')
+        # Obtener los títulos ya existentes en el modelo Page
+        existing_titles = Page.objects.values_list('title', flat=True)
+
+        # Buscar en los modelos relevantes y excluir los títulos existentes
+        characters = Character.objects.filter(name__icontains=query).exclude(name__in=existing_titles).values('id', 'name')
+        fruits = Fruit.objects.filter(name__icontains=query).exclude(name__in=existing_titles).values('id', 'name')
+        crews = Crew.objects.filter(name__icontains=query).exclude(name__in=existing_titles).values('id', 'name')
+        sagas = Saga.objects.filter(title__icontains=query).exclude(title__in=existing_titles).values('id', 'title')
+        arcs = Arc.objects.filter(title__icontains=query).exclude(title__in=existing_titles).values('id', 'title')
+        chapters = Chapter.objects.filter(title__icontains=query).exclude(title__in=existing_titles).values('id', 'title')
 
         # Combinar los resultados y agregar display_name
         results = (
@@ -301,74 +339,74 @@ def search_titles(request):
         'results': results
     }) 
  
-@login_required
-def edit_page(request, page_id):
-    page = get_object_or_404(Page, id=page_id)
+@login_required  
+def edit_page(request, page_name):
+    page = get_object_or_404(Page, title=page_name)
 
     if request.method == 'POST':
-        # Actualizar la página
         page.main_image_url = request.POST.get('main_image_url', page.main_image_url)
         page.save()
 
-        # Obtener las listas de datos del formulario
-        section_ids = request.POST.getlist('section_ids[]')  # IDs de las secciones
-        section_titles = request.POST.getlist('module_titles[]')  # Títulos de las secciones
-        section_contents = request.POST.getlist('module_contents[]')  # Contenidos de las secciones
+        section_ids = request.POST.getlist('section_ids[]')
+        section_titles = request.POST.getlist('module_titles[]')  # Solo para las secciones no "main"
+        section_contents = request.POST.getlist('module_contents[]')
 
-        # Depuración: Imprimir los datos enviados
-        print("section_ids:", section_ids)
-        print("section_titles:", section_titles)
-        print("section_contents:", section_contents)
-
-        # Verifica que las listas tengan el mismo tamaño
         if len(section_ids) != len(section_contents):
             messages.error(request, "Error: Los datos enviados no son consistentes.")
-            return redirect('edit_page', page_id=page.id)
+            return redirect('edit_page', page_name=page.title)
 
-        # Procesar las secciones
-        title_index = 0  # Índice para los títulos (solo para secciones que no son "main")
-        for index, section_id in enumerate(section_ids):
-            content = section_contents[index].strip()
+        title_index = 0
+        seen_main = False
 
-            # Ignorar secciones sin contenido
+        existing_section_ids = set(str(s.id) for s in page.sections.all())
+        received_ids = set(section_ids)
+        sections_to_delete = existing_section_ids - received_ids
+
+        for i, section_id in enumerate(section_ids):
+            content = section_contents[i].strip()
             if not content:
                 continue
 
             if section_id.startswith("new-"):
-                # Crear una nueva sección
-                title = section_titles[title_index].strip() if title_index < len(section_titles) else "Sin título"
+                # Crear sección nueva
+                # Asumimos que el primer campo oculto (sin título visible) es "main"
+                if not seen_main:
+                    title = "main"
+                    seen_main = True
+                else:
+                    title = section_titles[title_index].strip() if title_index < len(section_titles) else "Sin título"
+                    title_index += 1
+
                 Section.objects.create(
                     page=page,
                     title=title,
                     content=content,
-                    order=index,  # Usar el índice como orden
-                    type='text',  # Tipo fijo como "text"
+                    order=i,
+                    type='text',
                 )
-                title_index += 1  # Incrementar el índice de títulos solo para nuevas secciones
             else:
-                # Actualizar una sección existente
                 try:
                     section = Section.objects.get(id=section_id, page=page)
-                    if section.title != "main":
-                        title = section_titles[title_index].strip() if title_index < len(section_titles) else section.title
-                        title_index += 1  # Incrementar el índice de títulos solo para secciones no "main"
+                    if section.title == "main":
+                        seen_main = True
+                        title = "main"
                     else:
-                        title = "main"  # Mantener el título "main" para la sección principal
+                        title = section_titles[title_index].strip() if title_index < len(section_titles) else section.title
+                        title_index += 1
 
-                    # Solo actualizar si los datos han cambiado
-                    if section.title != title or section.content != content or section.order != index:
+                    if section.title != title or section.content != content or section.order != i:
                         section.title = title
                         section.content = content
-                        section.order = index  # Actualizar el orden
+                        section.order = i
                         section.save()
                 except Section.DoesNotExist:
-                    messages.error(request, f"Error: No se encontró la sección con ID {section_id}.")
                     continue
 
-        messages.success(request, "Página actualizada exitosamente.")
-        return redirect('view_page', page_id=page.id)
+        # Eliminar secciones removidas por el usuario
+        if sections_to_delete:
+            Section.objects.filter(id__in=sections_to_delete, page=page).delete()
 
-    return render(request, 'WikiPage/edit_page.html', {
-        'page': page,
-        'range': range(5)  # Pasar un rango para nuevas secciones
-    })
+        messages.success(request, "Página actualizada exitosamente.")
+        return redirect('view_page', page_name=page.title)
+
+    return render(request, 'WikiPage/edit_page.html', {'page': page})

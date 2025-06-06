@@ -1,34 +1,60 @@
-{% extends 'WikiPage/base.html' %}
-{% block content %} 
-  
+{% extends 'WikiPage/base.html' %} {% block content %}
+
 <div class="content">
-    {% for chapter in chapters %}
-    <section class="info_card character-overview">
-            <img src="https://lafrikileria.com/blog/wp-content/uploads/2021/07/one-piece-logo.jpg" alt="One Piece Logo"
-             style="width: 100%; max-width: 350px; height: auto; max-height: 530px; object-fit: contain; border-radius: 10px; margin-bottom: 15px;" />
-            <h3>{{ chapter.title }}</h3>
-            <p><strong>Número de capítulo:</strong> {{ chapter.number }}</p>
-            <p><strong>N° Manga:</strong> {{ chapter.chapter }}</p> 
-            <p><strong>Descripción:</strong> {{ chapter.description }}</p>
-            <p><strong>Fecha de Lanzamiento:</strong> {{ chapter.release_date }}</p>
-            <p><strong>Saga:</strong> {{ chapter.saga.title }}</p>
-            <p><strong>Arco:</strong> {{ chapter.arc.title }}</p> 
-        </section>
-    {% endfor %} 
-    </div>
-    <div class="pagination">
-        <span class="step-links">
-            {% if chapters.has_previous %}
-                <a href="?page=1">Primera</a>
-                <a href="?page={{ chapters.previous_page_number }}">Anterior</a>
-            {% endif %}
-    
-            <span>Página {{ chapters.number }} de {{ chapters.paginator.num_pages }}</span>
-    
-            {% if chapters.has_next %}
-                <a href="?page={{ chapters.next_page_number }}">Siguiente</a>
-                <a href="?page={{ chapters.paginator.num_pages }}">Última</a>
-            {% endif %}
-        </span>
-    </div>
+  {% for chapter in chapters %}
+  <section class="info_card character-overview">
+    <img
+      src="https://lafrikileria.com/blog/wp-content/uploads/2021/07/one-piece-logo.jpg"
+      alt="One Piece Logo"
+      style="
+        width: 100%;
+        max-width: 350px;
+        height: auto;
+        max-height: 530px;
+        object-fit: contain;
+        border-radius: 10px;
+        margin-bottom: 15px;
+      "
+    />
+    <h3>
+      {% if chapter.exists %}
+      <a href="{% url 'view_page' chapter.title %}"> {{ chapter.title }} </a>
+      {% elif user.is_authenticated %}
+      <a href="{% url 'create_page' %}?title={{ chapter.title }}">
+        {{ chapter.title }}
+      </a>
+      {% else %}
+      <a
+        href="{% url 'login' %}?next={% url 'create_page' %}?title={{ chapter.title }}"
+      >
+        {{ chapter.title }}
+      </a>
+      {% endif %}
+    </h3>
+    <p><strong>Número de capítulo:</strong> {{ chapter.number }}</p>
+    <p><strong>N° Manga:</strong> {{ chapter.chapter }}</p>
+    <p><strong>Descripción:</strong> {{ chapter.description }}</p>
+    <p><strong>Fecha de Lanzamiento:</strong> {{ chapter.release_date }}</p>
+    <p><strong>Saga:</strong> {{ chapter.saga.title }}</p>
+    <p><strong>Arco:</strong> {{ chapter.arc.title }}</p>
+  </section>
+  {% endfor %}
+</div>
+<div class="pagination">
+  <span class="step-links">
+    {% if chapters.has_previous %}
+    <a href="?page=1">Primera</a>
+    <a href="?page={{ chapters.previous_page_number }}">Anterior</a>
+    {% endif %}
+
+    <span
+      >Página {{ chapters.number }} de {{ chapters.paginator.num_pages }}</span
+    >
+
+    {% if chapters.has_next %}
+    <a href="?page={{ chapters.next_page_number }}">Siguiente</a>
+    <a href="?page={{ chapters.paginator.num_pages }}">Última</a>
+    {% endif %}
+  </span>
+</div>
 {% endblock %}

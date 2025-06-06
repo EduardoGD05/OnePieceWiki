@@ -1,37 +1,89 @@
-{% extends 'WikiPage/base.html' %}
-{% block content %}
+{% extends 'WikiPage/base.html' %} {% block content %}
 <div class="content">
-    {% for character in characters %}   
-        <section class="info_card character-overview">
-            
-            {% if character.image_url %}
-            <img src="{{ character.image_url }}" alt="{{ character.name }}" class="character-image" /> 
-            {% endif %}
-            
-            <h3>{{ character.name }}</h3>
-            <p><strong>Edad:</strong> {{ character.age | default:"N/A"}}</p>
-            <p><strong>Recompensa:</strong> {{ character.bounty | default:"N/A" }}</p>
-            <p><strong>Estado:</strong> {{ character.status }}</p>
-            <p><strong> <a href="{% url 'crew' character.crew.id %}"> Tripulación: </a> </strong> {{ character.crew.name}}</p>
-                        {% if character.fruit.id  != 2%}
-            <p><strong> <a  href="{% url 'fruit' character.fruit.id %}"> Fruta: </a> </strong> {{ character.fruit.name }}</p>
-            {% endif %}
-        </section> 
-    {% endfor %} 
-    </div>
-    <div class="pagination">
-        <span class="step-links">
-            {% if characters.has_previous %}
-                <a href="?page=1">Primera</a>
-                <a href="?page={{ characters.previous_page_number }}">Anterior</a>
-            {% endif %}
-    
-            <span>Página {{ characters.number }} de {{ characters.paginator.num_pages }}</span>
-    
-            {% if characters.has_next %}
-                <a href="?page={{ characters.next_page_number }}">Siguiente</a>
-                <a href="?page={{ characters.paginator.num_pages }}">Última</a>
-            {% endif %}
-        </span>
-    </div>
- {% endblock %}
+  {% for character in characters %}
+  <section class="info_card character-overview">
+    {% if character.image_url %}
+    <img
+      src="{{ character.image_url }}"
+      alt="{{ character.name }}"
+      class="character-image"
+    />
+    {% endif %}
+    <h3>
+      {% if character.exists %}
+      <a href="{% url 'view_page' character.name  %}"> {{ character.name }} </a>
+      {% elif user.is_authenticated %}
+      <a href="{% url 'create_page' %}?title={{ character.name  }}">
+        {{ character.name }}
+      </a>
+      {% else %}
+      <a
+        href="{% url 'login' %}?next={% url 'create_page' %}?title={{ character.name  }}"
+      >
+        {{ character.name }}
+      </a>
+      {% endif %}
+    </h3>
+    <p><strong>Edad:</strong> {{ character.age | default:"N/A"}}</p>
+    <p><strong>Recompensa:</strong> {{ character.bounty | default:"N/A" }}</p>
+    <p><strong>Estado:</strong> {{ character.status }}</p>
+    <p>
+      <strong>
+        {% if character.crew.exists %}
+        <a href="{% url 'view_page' character.crew.name %}"> Tripulación: </a>
+        {% elif user.is_authenticated %}
+        <a href="{% url 'create_page' %}?title={{ character.crew.name }}">
+          Tripulación:
+        </a>
+        {% else %}
+        <a
+          href="{% url 'login' %}?next={% url 'create_page' %}?title={{ character.crew.name }}"
+        >
+          Tripulación:
+        </a>
+        {% endif %}
+      </strong>
+      {{ character.crew.name }}
+    </p>
+    {% if character.fruit.id != 2%}
+    <p>
+      <strong>
+        {% if character.fruit.exists %}
+        <a href="{% url 'view_page' character.fruit.name %}"> Fruta: </a>
+        {% elif user.is_authenticated %}
+        <a href="{% url 'create_page' %}?title={{ character.fruit.name }}">
+          Fruta:
+        </a>
+        {% else %}
+        <a
+          href="{% url 'login' %}?next={% url 'create_page' %}?title={{ character.fruit.name }}"
+        >
+          Fruta:
+        </a>
+        {% endif %}
+      </strong>
+      {{ character.fruit.name }}
+    </p>
+    {% endif %}
+  </section>
+  {% endfor %}
+</div>
+<div class="pagination">
+  <span class="step-links">
+    {% if characters.has_previous %}
+    <a href="?page=1">Primera</a>
+    <a href="?page={{ characters.previous_page_number }}">Anterior</a>
+    {% endif %}
+
+    <span
+      >Página {{ characters.number }} de
+      {{characters.paginator.num_pages}}</span
+    >
+
+    {% if characters.has_next %}
+    <a href="?page={{ characters.next_page_number }}">Siguiente</a>
+    <a href="?page={{ characters.paginator.num_pages }}">Última</a>
+    {% endif %}
+  </span>
+</div>
+{% endblock %}

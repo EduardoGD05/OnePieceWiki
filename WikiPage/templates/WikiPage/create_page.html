@@ -25,13 +25,13 @@
       <!-- Primera sección predeterminada con título "main" -->
       <div class="module">
         <input type="hidden" name="section_ids[]" value="new-0" />
-        <label for="module-title-main">Título de la Sección Principal:</label>
         <input
           type="text"
           id="module-title-main"
           name="module_titles[]"
           value="main"
           readonly
+          hidden
           style="
             width: 100%;
             padding: 10px;
@@ -99,15 +99,24 @@
       <textarea
         id="module-content-${moduleCount}"
         name="module_contents[]"
-        rows="1"
-        placeholder="Escribe el contenido de la Sección..."
-        style="width: 100%; padding: 10px; margin-bottom: 10px; resize: none; overflow: initial;"
+        rows="5"
+        placeholder="Escribe el contenido de la Sección Principal..."
+        style="
+          width: 100%;
+          padding: 10px;
+          margin-bottom: 10px;
+          resize: none;
+          overflow: hidden;
+        "
       ></textarea>
       <div class='center'>
       <button type="button" class="btn-remove-module">X</button>
       </div>
     `;
     modulesContainer.appendChild(moduleDiv);
+    const newTextarea = moduleDiv.querySelector("textarea");
+    newTextarea.addEventListener("input", () => autoExpand(newTextarea));
+    autoExpand(newTextarea);
 
     // Agregar evento para eliminar la sección
     moduleDiv
@@ -118,6 +127,7 @@
   // Agregar evento inicial para expandir automáticamente el textarea
   document.querySelectorAll("textarea").forEach((textarea) => {
     textarea.addEventListener("input", () => autoExpand(textarea));
+    autoExpand(textarea);
   });
 
   // Función para expandir automáticamente el textarea
@@ -161,6 +171,14 @@
     margin-bottom: 15px;
     border-radius: 5px;
     background-color: #f9f9f9;
+  }
+  textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    resize: none;
+    overflow: hidden;
+    transition: height 1s ease; /* <- transición suave */
   }
 </style>
 {% endblock %}

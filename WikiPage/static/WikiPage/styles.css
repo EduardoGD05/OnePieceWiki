@@ -33,7 +33,7 @@ h1 {
 
 h3 {
   text-align: center;
-  color: #001942;
+  color: #413200;
   font-family: "Texturina", serif;
   margin-bottom: 10px;
   margin-top: 0px;
@@ -43,7 +43,7 @@ h3 {
 /* ESTILOS PARA PÁRRAFOS*/
 p {
   text-align: justify;
-  color: #001942;
+  color: #413200;
   font-family: "Open Sans";
   font-weight: 100;
   font-size: 20px;
@@ -53,6 +53,11 @@ p {
 h3,
 p {
   width: 100%;
+}
+
+h3 a {
+  text-decoration: none;
+  font-size: xx-large;
 }
 
 /* LOGO DE LA PÁGINA */
@@ -353,6 +358,37 @@ form .search-bar,
   z-index: 1;
 }
 
+#luffy::after {
+  background-color: #e83939;
+}
+#zoro::after {
+  background-color: #9ce860;
+}
+#nami::after {
+  background-color: #f77407;
+}
+#usopp::after {
+  background-color: #f6a700;
+}
+#sanji::after {
+  background-color: #ebe56c;
+}
+#chopper::after {
+  background-color: #de8081;
+}
+#robin::after {
+  background-color: #d7b3d7;
+}
+#franky::after {
+  background-color: #7ad8ea;
+}
+#brook::after {
+  background-color: #f4f4f5;
+}
+#jinbe::after {
+  background-color: #a1caea;
+}
+
 .card:hover::after {
   top: -50px;
 }
@@ -481,7 +517,7 @@ form .search-bar,
 }
 
 .info_card h3 {
-  color: #001942;
+  color: #413200;
   margin-bottom: 10px;
   margin-top: 0px;
   font-size: 35px;
@@ -513,7 +549,7 @@ form .search-bar,
 .highlight {
   background-color: #f6a700;
   font-family: "Texturina";
-  color: #001942;
+  color: #413200;
   text-shadow: none;
 }
 
@@ -575,7 +611,7 @@ form .search-bar,
 }
 
 .search-result a {
-  color: #3a86ff;
+  color: #484ace;
   background-color: #ffffff;
   padding: 10px;
   margin: 20px;
@@ -583,7 +619,7 @@ form .search-bar,
 }
 
 .search-result button {
-  color: #3a86ff;
+  color: #484ace;
   font-size: larger;
   font-weight: bold;
   background-color: #ffffff;
@@ -594,7 +630,7 @@ form .search-bar,
 }
 
 .search-result button:hover {
-  background-color: #3a86ff;
+  background-color: #484ace;
   color: #fff;
 }
 
@@ -622,6 +658,13 @@ form .search-bar,
 
 .sections {
   margin: 4%;
+}
+
+.sections h2 {
+  color: #ce4e48;
+  text-decoration: underline;
+  border-top: 2px solid #413200;
+  margin-top: 50px;
 }
 
 .sections + .sections {

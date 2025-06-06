@@ -1,22 +1,32 @@
-{% extends 'WikiPage/base.html' %}
-{% block content %} 
- <div class="content">
-    {% for saga in sagas %} 
-        <section class="info_card character-overview">
-            
-            {% if saga.image_url %}
-            <img src="{{ saga.image_url }}"/>
-            {% else %}
-            <p></p>
-            {% endif %}
-            <a href="{% url 'saga_arcs' saga.id %}"> 
-            <h3>{{ saga.title }}</h3>
-            </a>
-            <p><strong>Número de Saga:</strong> {{ saga.saga_number }}</p>
-            <p><strong>Volumenes:</strong> {{ saga.saga_volume }}</p>
-            <p><strong>Capítulos:</strong> {{ saga.saga_chapitre }}</p>
-            <p><strong>Episodios:</strong> {{ saga.saga_episode }}</p>
-        </section> 
-    {% endfor %}
-    </div>
+{% extends 'WikiPage/base.html' %} {% block content %}
+<div class="content">
+  {% for saga in sagas %}
+  <section class="info_card character-overview">
+    {% if saga.image_url %}
+    <img src="{{ saga.image_url }}" />
+    {% else %}
+    <p></p>
+    {% endif %}
+    <h3>
+      {% if saga.exists %}
+      <a href="{% url 'view_page' saga.title %}"> {{ saga.title}} </a>
+      {% elif user.is_authenticated %}
+      <a href="{% url 'create_page' %}?title={{ saga.title }}">
+        {{ saga.title}}
+      </a>
+      {% else %}
+      <a
+        href="{% url 'login' %}?next={% url 'create_page' %}?title={{ saga.title }}"
+      >
+        {{ saga.title}}
+      </a>
+      {% endif %}
+    </h3>
+    <p><strong>Número de Saga:</strong> {{ saga.saga_number }}</p>
+    <p><strong>Volumenes:</strong> {{ saga.saga_volume }}</p>
+    <p><strong>Capítulos:</strong> {{ saga.saga_chapitre }}</p>
+    <p><strong>Episodios:</strong> {{ saga.saga_episode }}</p>
+  </section>
+  {% endfor %}
+</div>
 {% endblock %}

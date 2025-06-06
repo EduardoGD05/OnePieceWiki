@@ -26,8 +26,9 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'), 
     path('create-page/', views.create_page, name='create_page'),
     path('search-titles/', views.search_titles, name='search_titles'),
-    path('page/<int:page_id>/', views.view_page, name='view_page'),
-    path('page/<int:page_id>/edit/', views.edit_page, name='edit_page')
+    path('page/<str:page_name>/', views.view_page, name='view_page'),
+    path('page/<str:page_name>/edit/', views.edit_page, name='edit_page'),
+    path('api/check-page-exists/', views.check_page_exists, name='check_page_exists')
 
 ]
 

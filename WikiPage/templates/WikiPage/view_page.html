@@ -12,13 +12,13 @@
       <h2>{{ section.title }}</h2>
       {% endif %}
 
-      <p>{{ section.content }}</p>
+      <p>{{ section.content|linebreaksbr }}</p>
     </div>
     {% endfor %}
   </div>
 
   {% if user.is_authenticated %}
-  <a href="{% url 'edit_page' page.id %}" class="btn-edit">Editar Página</a>
+  <a href="{% url 'edit_page' page.title %}" class="btn-edit">Editar Página</a>
   {% endif %}
 </div>
 {% endblock %}

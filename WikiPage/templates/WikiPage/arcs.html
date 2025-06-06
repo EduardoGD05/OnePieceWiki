@@ -1,32 +1,42 @@
-{% extends 'WikiPage/base.html' %}
-{% block content %} 
- <div class="content">
-     
-    {% for arc in arcs %} 
-        <section class="info_card character-overview">
-            {% if arc.image_url %}
-                <img src="{{ arc.image_url }}" /> 
-            {% endif %}
-            <a href="{% url 'arc_chapter' arc.id %}"> 
-                <h3>{{ arc.title }}</h3> 
-            </a>
-            <p><strong>Descripción:</strong> {{ arc.description | default:"N/A"}}</p> 
-        </section> 
-    {% endfor %} 
-    </div>
-    <div class="pagination">
-        <span class="step-links">
-            {% if arcs.has_previous %}
-                <a href="?page=1">Primera</a>
-                <a href="?page={{ arcs.previous_page_number }}">Anterior</a>
-            {% endif %}
-    
-            <span>Página {{ arcs.number }} de {{ arcs.paginator.num_pages }}</span>
-    
-            {% if arcs.has_next %}
-                <a href="?page={{ arcs.next_page_number }}">Siguiente</a>
-                <a href="?page={{ arcs.paginator.num_pages }}">Última</a>
-            {% endif %}
-        </span>
-    </div>
+{% extends 'WikiPage/base.html' %} {% block content %}
+<div class="content">
+  {% for arc in arcs %}
+  <section class="info_card character-overview">
+    {% if arc.image_url %}
+    <img src="{{ arc.image_url }}" />
+    {% endif %}
+    <h3>
+      {% if arc.exists %}
+      <a href="{% url 'view_page' arc.title %}"> {{ arc.title }} </a>
+      {% elif user.is_authenticated %}
+      <a href="{% url 'create_page' %}?title={{ arc.title }}">
+        {{ arc.title }}
+      </a>
+      {% else %}
+      <a
+        href="{% url 'login' %}?next={% url 'create_page' %}?title={{ arc.title }}"
+      >
+        {{ arc.title }}
+      </a>
+      {% endif %}
+    </h3>
+    <p><strong>Descripción:</strong> {{ arc.description | default:"N/A"}}</p>
+  </section>
+  {% endfor %}
+</div>
+<div class="pagination">
+  <span class="step-links">
+    {% if arcs.has_previous %}
+    <a href="?page=1">Primera</a>
+    <a href="?page={{ arcs.previous_page_number }}">Anterior</a>
+    {% endif %}
+
+    <span>Página {{ arcs.number }} de {{ arcs.paginator.num_pages }}</span>
+
+    {% if arcs.has_next %}
+    <a href="?page={{ arcs.next_page_number }}">Siguiente</a>
+    <a href="?page={{ arcs.paginator.num_pages }}">Última</a>
+    {% endif %}
+  </span>
+</div>
 {% endblock %}

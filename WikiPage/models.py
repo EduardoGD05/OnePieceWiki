@@ -7,8 +7,8 @@ class Crew(models.Model):
     description = models.TextField(null=True, blank=True)
     status = models.CharField(max_length=200, default='Desconocido')
     number = models.IntegerField()
-    roman_name = models.CharField(max_length=100)
-    total_prime = models.CharField(max_length=100)
+    roman_name = models.CharField(max_length=100,null=True, blank=True)
+    total_prime = models.CharField(max_length=100,null=True, blank=True)
     is_yonko = models.BooleanField()
     image_url = models.URLField(null=True, blank=True)
 
